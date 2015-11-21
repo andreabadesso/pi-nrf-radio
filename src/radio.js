@@ -13,8 +13,11 @@ const   pins    = {
     'PWR': 7
 };
 
-class Radio {
+class Radio extends EventEmitter {
+
     constructor() {
+        super();
+
         this.spi = SPI.initialize(spiDev);
         this.ce  = GPIO.connect(pins.CE);
         this.csn = GPIO.connect(pins.CSN);
