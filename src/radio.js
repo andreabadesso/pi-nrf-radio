@@ -16,7 +16,7 @@ const   pins    = {
 class Radio {
     constructor() {
         this.spi = SPI.initialize(spiDev);
-        this.ce = GPIO.connect(pins.CE);
+        this.ce  = GPIO.connect(pins.CE);
         this.csn = GPIO.connect(pins.CSN);
         this.irq = GPIO.connect(pins.IRQ);
     }
@@ -67,7 +67,7 @@ class Radio {
      * to high
      */
     pulseCSN(block) {
-        this.setCSN('high', 'hce');
+        this.setCSN('high');
         this.setCSN('low', block);
     }
 
@@ -89,7 +89,7 @@ class Radio {
         writeBuf = Buffer([cmd].concat(data));
         data.reverse();
 
-        SPI.transfer(writeBuf, readLen && readLen + 1, (err, data) => {
+        this.SPI.transfer(writeBuf, readLen && readLen + 1, (err, data) => {
             if (err) {
                 return cb(err);
             }
