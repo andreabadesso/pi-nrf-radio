@@ -50,6 +50,29 @@ class Radio {
     }
 
     /*
+     * Changes the state of the CSN pin
+     *
+     * @param {String} state State to set the CSN Pin ('high' or 'low')
+     * @param {Boolean} block Time in microseconds to block the thread
+     */
+    setCSN(state, block) {
+        this.csn.mode(state);
+        if (block) {
+            this.block(block);
+        }
+    }
+
+    /*
+     * Pulses the CSN by setting it to low immediately after setting it
+     * to high
+     */
+    pulseCSN(block) {
+        this.setCSN('high', 'hce');
+        this.setCSN('low', block);
+    }
+
+
+    /*
      * Executes a command on the radio via spi, returning its response
      *
      * @param {Number} cmd The command to execute on the radio
@@ -57,6 +80,8 @@ class Radio {
      * @param {Function} cb The callback that will be executed on the spi response
      */
     execCommand(cmd, data, cb) {
+        this.setCSN('low');
+
         let writeBuf,
             readLen = 0;
 
@@ -69,6 +94,7 @@ class Radio {
                 return cb(err);
             }
 
+            this.setCSN('high');
             return cb(null, data && Array.prototype.reverse.call(data.slice(1)));
         });
     }
