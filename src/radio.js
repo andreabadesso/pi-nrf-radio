@@ -2,7 +2,8 @@
 
 const   GPIO            = require('pi-gpio'),
         SPI             = require('pi-spi'),
-        EventEmitter    = require('events');
+        EventEmitter    = require('events'),
+        async           = require('async');
 
 const spiDev = '/dev/spidev0.0';
 
@@ -44,7 +45,7 @@ class Radio extends EventEmitter {
 
         let openFns = ports.map((port) => {
             return (callback) => {
-                GPIO.open(port, port.mode, callback);
+                GPIO.open(port.pin, port.mode, callback);
             };
         });
 
@@ -56,7 +57,7 @@ class Radio extends EventEmitter {
 
             this.emit('ready');
             // Testing LED
-            gpio.write(12, 1);
+            GPIO.write(12, 1);
         });
     }
 
