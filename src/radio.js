@@ -80,8 +80,6 @@ class Radio {
      * @param {Function} cb The callback that will be executed on the spi response
      */
     execCommand(cmd, data, cb) {
-        this.setCSN('low');
-
         let writeBuf,
             readLen = 0;
 
@@ -94,7 +92,6 @@ class Radio {
                 return cb(err);
             }
 
-            this.setCSN('high');
             return cb(null, data && Array.prototype.reverse.call(data.slice(1)));
         });
     }
