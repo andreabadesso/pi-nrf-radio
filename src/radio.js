@@ -1,9 +1,31 @@
 'use strict';
 
-const   GPIO    = require('pi-pins'),
-        SPI     = require('pi-spi');
+const   GPIO = require('pi-gpio'),
+        SPI  = require('pi-spi');
 
-const   spiDev  = '/dev/spidev0.0';
+const spiDev = '/dev/spidev0.0';
+
+const ports = [{
+    name: 'CE',
+    pin: 11,
+    mode: 'output'
+}, {
+    name: 'IRQ',
+    pin: 15,
+    mode: 'input'
+}, {
+    name: 'CSN',
+    pin: 13,
+    mode: 'output'
+}, {
+    name: 'LED',
+    pin: 12,
+    mode: 'output'
+}, {
+    name: 'PWR',
+    pin: 7,
+    mode: 'output'
+}];
 
 const   pins    = {
     'CE': 11,
@@ -17,11 +39,24 @@ class Radio extends EventEmitter {
 
     constructor() {
         super();
-
         this.spi = SPI.initialize(spiDev);
-        this.ce  = GPIO.connect(pins.CE);
-        this.csn = GPIO.connect(pins.CSN);
-        this.irq = GPIO.connect(pins.IRQ);
+
+        let openFns = ports.map((port) => {
+            return (callback) => {
+                GPIO.open(port, port.mode, callback);
+            };
+        });
+
+        async.parallel(openFns, (err) => {
+            if (err) {
+                console.log(err);
+                process.exit(1);
+            }
+
+            this.emit('ready');
+            // Testing LED
+            gpio.write(12, 1);
+        });
     }
 
     /*
@@ -31,7 +66,7 @@ class Radio extends EventEmitter {
      */
     block(us) {
         let start = process.hrtime();
-        while(1) {
+        while (1) {
             let diff = process.hrtime(start);
             if (diff[0] * 1e9 + diff[1] >= us * 1e3) break;
         }
@@ -42,11 +77,11 @@ class Radio extends EventEmitter {
     /*
      * Changes the state of the CE pin
      *
-     * @param {String} state State to set the CE Pin ('high' or 'low')
+     * @param {String} state State to set the CE Pin (1 or 0)
      * @param {Boolean} block Time in microseconds to block the thread
      */
-    setCE(state, block) {
-        this.ce.mode(state);
+    setCE(state, block, cb) {
+        GPIO.write(pins.CE, state, cb);
         if (block) {
             this.block(block);
         }
@@ -55,11 +90,11 @@ class Radio extends EventEmitter {
     /*
      * Changes the state of the CSN pin
      *
-     * @param {String} state State to set the CSN Pin ('high' or 'low')
+     * @param {String} state State to set the CSN Pin (1 or 0)
      * @param {Boolean} block Time in microseconds to block the thread
      */
-    setCSN(state, block) {
-        this.csn.mode(state);
+    setCSN(state, block, cb) {
+        GPIO.write(pins.CSN, state, cb);
         if (block) {
             this.block(block);
         }
@@ -70,8 +105,9 @@ class Radio extends EventEmitter {
      * to high
      */
     pulseCSN(block) {
-        this.setCSN('high');
-        this.setCSN('low', block);
+        this.setCSN(1, () => {
+            this.setCSN(0, block);
+        });
     }
 
 
