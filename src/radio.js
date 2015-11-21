@@ -1,7 +1,8 @@
 'use strict';
 
-const   GPIO = require('pi-gpio'),
-        SPI  = require('pi-spi');
+const   GPIO            = require('pi-gpio'),
+        SPI             = require('pi-spi'),
+        EventEmitter    = require('events');
 
 const spiDev = '/dev/spidev0.0';
 
