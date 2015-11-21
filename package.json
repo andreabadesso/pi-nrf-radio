@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/andreabadesso/pi-nrf-radio#readme",
   "dependencies": {
-    "pi-gpio": "0.0.8",
+    "pi-pins": "^1.0.2",
     "pi-spi": "^1.0.1"
   }
 }

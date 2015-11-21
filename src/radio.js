@@ -1,6 +1,6 @@
 'use strict';
 
-const   GPIO    = require('pi-gpio'),
+const   GPIO    = require('pi-pins'),
         SPI     = require('pi-spi');
 
 const   spiDev  = '/dev/spidev0.0';
