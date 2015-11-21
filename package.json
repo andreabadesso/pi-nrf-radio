@@ -1,0 +1,35 @@
+{
+  "name": "pi-nrf-radio",
+  "version": "0.0.1",
+  "description": "Library for communication between raspberry PI and nRDF24L01 radio",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/andreabadesso/pi-nrf-radio.git"
+  },
+  "keywords": [
+    "node",
+    "radio",
+    "internet",
+    "of",
+    "things",
+    "nrf",
+    "raspberrypi",
+    "raspberry",
+    "pi",
+    "nrfd24l01"
+  ],
+  "author": "Andre Abadesso <andre@lab21k.com.br>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andreabadesso/pi-nrf-radio/issues"
+  },
+  "homepage": "https://github.com/andreabadesso/pi-nrf-radio#readme",
+  "dependencies": {
+    "pi-gpio": "0.0.8",
+    "pi-spi": "^1.0.1"
+  }
+}
