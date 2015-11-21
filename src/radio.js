@@ -89,7 +89,7 @@ class Radio {
         writeBuf = Buffer([cmd].concat(data));
         data.reverse();
 
-        spi.transfer(writeBuf, readLen && readLen + 1, (err, data) => {
+        SPI.transfer(writeBuf, readLen && readLen + 1, (err, data) => {
             if (err) {
                 return cb(err);
             }
