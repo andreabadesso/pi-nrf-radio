@@ -83,10 +83,27 @@ class Radio extends EventEmitter {
      * @param {Boolean} block Time in microseconds to block the thread
      */
     setCE(state, block, cb) {
-        GPIO.write(pins.CE, state, cb);
-        if (block) {
-            this.block(block);
-        }
+        GPIO.write(pins.CE, state, () => {
+            if (block) {
+                this.block(block);
+            }
+            cb();
+        });
+    }
+
+    /*
+     * Changes the state of the PWR pin
+     *
+     * @param {String} state State to set the CE Pin (1 or 0)
+     * @param {Boolean} block Time in microseconds to block the thread
+     */
+    setPWR(state, block, cb) {
+        GPIO.write(pins.PWR, state, () => {
+            if (block) {
+                this.block(block);
+            }
+            cb();
+        });
     }
 
     /*
